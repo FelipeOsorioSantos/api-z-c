@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zeta</title>
+
+  <script src="https://microsoft.github.io/PowerBI-JavaScript/demo/node_modules/jquery/dist/jquery.js"></script>
+  <script src="https://microsoft.github.io/PowerBI-JavaScript/demo/node_modules/powerbi-client/dist/powerbi.js"></script>
+
+  <script src="https://alcdn.msauth.net/browser/2.18.0/js/msal-browser.min.js" integrity="sha384-xxxx" crossorigin="anonymous"></script>
+
+
+  <style>
+    * {
+      padding: 0;
+      margin: 0;
+      box-sizing: border-box;
+    }
+
+    a, ul{
+      text-decoration: none;
+      list-style: none;
+    }
+
+    .flex{
+      display: flex;
+    }
+
+    .justify-center{
+      justify-content: center;
+    }
+
+    .flex-col{
+      flex-direction: column;
+    }
+
+    .items-center{
+      align-items: center;
+    }
+
+    .p-3{
+      padding: 3rem;
+    }
+
+    .p-5{
+      padding: 5rem;
+    }
+
+    .nav{
+      background-color: #fff;
+    }
+
+    .nav .container {
+      width: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 0 auto;
+      padding: 2rem 4rem;
+    }
+
+    .nav img{
+      height: 70px;
+      margin-right: 1.5rem;
+    }
+
+    .nav .logo{
+      align-self: center;
+      font-size: 2rem;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .nav .containerLinks{
+      width: 100%;
+      margin-left: auto;
+      display: flex;
+      gap: 10px;
+      font-size: 1.25rem;
+      font-weight: 500;
+    }
+
+    
+
+    .nav .containerLinks a:hover{
+      color: #6D23F8;
+    }
+
+    #embedContainer{
+      height: 650px
+    }
+
+  </style>
+
+</head>
+<body >
+
+  
+  <nav class="nav">
+    <div class="container">
+      <a href="#" class="flex justify-center align-center">
+          <img 
+            src="https://media.licdn.com/dms/image/C4D0BAQEHCG_vuTu01A/company-logo_200_200/0/1663940965786?e=2147483647&v=beta&t=mkmvVxyNhGg2Yu-FknlTKydDpCWjXFEs46uy6wC5tWc" 
+            height="70px" 
+            alt="Stage Logo" />
+          <span class="logo">Stage</span>
+      </a>
+      <div >
+        <ul class="containerLinks">
+          <li>
+            <a href="#contentCaspio" >
+              Caspio
+            </a>
+          </li>
+          <li>
+            <a href="#contentPower" >
+              PowerBI
+            </a>
+          </li>
+          
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+
+  <div class="flex flex-col p-3">
+
+    <div id="contentPower" class="flex flex-col">
+      <h1 class="uppercase text-2xl font-bold">PowerBI Iframe</h1>
+      <div class="p-5">
+        <iframe title="Stage_Bacen_v1" width="1140" height="541.25" 
+        src="https://app.powerbi.com/reportEmbed?reportId=de0db1e3-8384-46c8-ab3b-e583151b8e4c&autoAuth=true&embeddedDemo=true" 
+        frameborder="0" allowFullScreen="true"></iframe>
+      </div>
+      
+    </div>
+
+    <div id="contentPower" class="flex flex-col p-5">
+      <h1 class="uppercase text-2xl font-bold">PowerBI token</h1>
+      <div id="embedContainer"></div>
+    </div>
+
+  </div>
+  <!-- scripts -->
+  <script>
+  
+    async function getToken(){
+      const response = await fetch('http://localhost:8080/token')
+      const data = await response.json()
+      return data.data
+    }
+
+    // Função para gerar o token de acesso
+    async function generateEmbedToken() {
+      const tokenAccess = await getToken()
+
+      const embedConfig = {
+        type: 'report',
+        accessToken: tokenAccess?.token,
+        embedUrl: tokenAccess?.embedToken, 
+        id: tokenAccess.id, 
+        settings: {
+          filterPaneEnabled: true,
+          navContentPaneEnabled: false
+          }
+        };
+      
+      const reportContainer = document.getElementById('embedContainer');
+      const report = powerbi.embed(reportContainer, embedConfig);
+      report.on('error', (event) => {
+          console.error('Erro ao carregar o relatório:', event.detail);
+        });
+    }
+
+    // Chame a função para gerar o token de acesso quando necessário
+    generateEmbedToken();
+  </script>
+</body>
+</html>
