@@ -1,5 +1,5 @@
-*node_modules
-*package-lock.json
-*docker-compose.dev.yml
-*docker-compose.yml
-*dist
+/node_modules
+/dist
+docker-compose.dev.yml
+docker-compose.yml
+.env

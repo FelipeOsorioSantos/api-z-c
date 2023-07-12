@@ -1,8 +1,10 @@
-import { AuthenticationContext } from "adal-node";
 import express from "express";
-import { getEmbedUrl } from "./util/embed_token";
 import dotenv from "dotenv";
 import cors from "cors";
+import { getEmbedUrl } from "./util/embed_token";
+import { AuthenticationContext } from "adal-node";
+import {getCompanyAccess } from "./util/access_caspio";
+import bodyParser from "body-parser";
 
 // readAll .env
 dotenv.config()
@@ -17,17 +19,30 @@ const options: cors.CorsOptions = {
 };
 app.use(cors(options));
 
+//bodyParse
+app.use(bodyParser.json());
 
-app.get('/', (req, res) => {
-  return res.send("Welcome to the powerbi token generation API");
+// create application/x-www-form-urlencoded parser
+app.use(express.urlencoded({ extended: false }))
+
+app.post('/table', async (req, res) => {
+  const company:string = req.body.company
+  const access_token = await getCompanyAccess(company)
+  return res.send(access_token);
 })
 
 // Generate access token for reports
-app.get('/token', (req, res) => {
+app.post('/token', async (req, res) => {
+
+  //GET DATA COMPANY
+  const company:string = req.body.company
+  const access_company = await getCompanyAccess(company)
+
   //DATA APLICATION
   const clientId = `${process.env.MICROSOFT_CLIENT_ID}`; 
   const resource = 'https://analysis.windows.net/powerbi/api'; 
-  const reportId = `${process.env.MICROSOFT_REPORT_ID}`;
+  const reportId = access_company.id_relatorio.split(',');
+  // const reportId = ['0cc4e6ad-dcfc-47fd-94fe-2eacf6edc8ac', '4fd8045a-8c49-4b68-ada3-a6a7562fa96e'];
 
   //AUTH
   const tenantId = `${process.env.MICROSOFT_TENANT_ID}`; 
@@ -35,8 +50,10 @@ app.get('/token', (req, res) => {
   const authorityUrl = `${authorityHostUrl}/${tenantId}`;
 
   //DATA USER
-  const username = `${process.env.MICROSOFT_USERNAME}`;
-  const password = `${process.env.MICROSOFT_PASSWORD}`;
+  const username = access_company.usuario_pbi;
+  const password = access_company.senha_pbi;
+  // const username = `${process.env.MICROSOFT_USERNAME}`;
+  // const password = `${process.env.MICROSOFT_PASSWORD}`;
 
   //GET TOKEN
   const context = new AuthenticationContext(authorityUrl);
@@ -51,8 +68,7 @@ app.get('/token', (req, res) => {
 
       const data = {
         token: accessToken.accessToken,
-        embedToken: embedToken.embedUrl,
-        id: embedToken.id
+        values: embedToken.value,
       }
 
       res.send({ 
@@ -61,6 +77,43 @@ app.get('/token', (req, res) => {
     }
   })
 })
+
+// Generate access token for reports using secretkey
+app.get('/token_scr', async (req, res) => {
+  // GET DATA COMPANY
+  // const company = req.body.company;
+  // const access_token = await getCompanyAccess(company);
+  
+  // DATA APPLICATION
+  const clientSecret = `${process.env.MICROSOFT_CLIENT_SECRET_KEY}`;
+  const clientId = `${process.env.MICROSOFT_CLIENT_ID}`;
+  const resource = 'https://analysis.windows.net/powerbi/api';
+  const reportId = `${process.env.MICROSOFT_REPORT_ID}`;
+
+  // AUTH
+  const tenantId = process.env.MICROSOFT_TENANT_ID;
+  const authorityHostUrl = 'https://login.microsoftonline.com';
+  const authorityUrl = `${authorityHostUrl}/${tenantId}`;
+
+  // GET TOKEN
+  const context = new AuthenticationContext(authorityUrl);
+  context.acquireTokenWithClientCredentials(resource, clientId, clientSecret, async (err:any, tokenResponse:any) => {
+    if (err) {
+      console.error('Erro ao obter o token de acesso:', err);
+      res.status(500).send('Erro ao obter o token de acesso.');
+    } else {
+      const accessToken = tokenResponse;
+
+      const data = {
+        token: accessToken,
+      };
+
+      res.send({
+        data
+      });
+    }
+  });
+});
 
 
 app.listen(8080, ()=> console.log("listening on port 8080"));
