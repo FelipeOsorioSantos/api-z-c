@@ -202,23 +202,6 @@
           console.error('Erro ao carregar o relatório:', event.detail);
         });
       }
-
-      // const embedConfig = {
-      //   type: 'report',
-      //   accessToken: dataReport?.token,
-      //   embedUrl: dataReport?.embedToken, 
-      //   id: dataReport.id, 
-      //   settings: {
-      //     filterPaneEnabled: true,
-      //     navContentPaneEnabled: false
-      //     }
-      //   };
-      
-      // const reportContainer = document.getElementById('embedContainer');
-      // const report = powerbi.embed(reportContainer, embedConfig);
-      // report.on('error', (event) => {
-      //     console.error('Erro ao carregar o relatório:', event.detail);
-      //   });
     }
 
     // Chame a função para gerar o token de acesso quando necessário
