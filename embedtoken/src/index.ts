@@ -25,13 +25,14 @@ app.use(bodyParser.json());
 // create application/x-www-form-urlencoded parser
 app.use(express.urlencoded({ extended: false }))
 
-app.post('/table', async (req, res) => {
+// Get data company. PS: After testing remove this route
+app.post('/company', async (req, res) => {
   const company:string = req.body.company
   const access_token = await getCompanyAccess(company)
   return res.send(access_token);
 })
 
-// Generate access token for reports
+// Generate access token for reports.
 app.post('/token', async (req, res) => {
 
   //GET DATA COMPANY
@@ -41,8 +42,8 @@ app.post('/token', async (req, res) => {
   //DATA APLICATION
   const clientId = `${process.env.MICROSOFT_CLIENT_ID}`; 
   const resource = 'https://analysis.windows.net/powerbi/api'; 
-  const reportId = access_company.id_relatorio.split(',');
-  // const reportId = ['0cc4e6ad-dcfc-47fd-94fe-2eacf6edc8ac', '4fd8045a-8c49-4b68-ada3-a6a7562fa96e'];
+  const reportId =  String(access_company.id_relatorio).split(',');
+  // const reportId = ['0cc4e6ad-dcfc-47fd-94fe-2eacf6edc8ac', '4fd8045a-8c49-4b68-ada3-a6a7562fa96e']; //PS: After testing remove this variable
 
   //AUTH
   const tenantId = `${process.env.MICROSOFT_TENANT_ID}`; 
@@ -52,8 +53,8 @@ app.post('/token', async (req, res) => {
   //DATA USER
   const username = access_company.usuario_pbi;
   const password = access_company.senha_pbi;
-  // const username = `${process.env.MICROSOFT_USERNAME}`;
-  // const password = `${process.env.MICROSOFT_PASSWORD}`;
+  // const username = `${process.env.MICROSOFT_USERNAME}`; //PS: After testing remove this variable
+  // const password = `${process.env.MICROSOFT_PASSWORD}`; //PS: After testing remove this variable
 
   //GET TOKEN
   const context = new AuthenticationContext(authorityUrl);
@@ -78,11 +79,8 @@ app.post('/token', async (req, res) => {
   })
 })
 
-// Generate access token for reports using secretkey
+// Generate access token for reports using secretkey. PS: After testing remove this route
 app.get('/token_scr', async (req, res) => {
-  // GET DATA COMPANY
-  // const company = req.body.company;
-  // const access_token = await getCompanyAccess(company);
   
   // DATA APPLICATION
   const clientSecret = `${process.env.MICROSOFT_CLIENT_SECRET_KEY}`;

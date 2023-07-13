@@ -47,6 +47,10 @@
       padding: 5rem;
     }
 
+    .gap-5{
+      gap: 5rem;
+    }
+
     .nav{
       background-color: #fff;
     }
@@ -88,6 +92,12 @@
     }
 
     #embedContainer{
+      display: flex;
+
+      height: 100%
+    }
+
+    .containerReport{
       height: 650px
     }
 
@@ -137,9 +147,8 @@
       
     </div>
 
-    <div id="contentPower" class="flex flex-col p-5">
+    <div id="contentPowerReport" class="flex flex-col p-5 gap-5">
       <h1 class="uppercase text-2xl font-bold">PowerBI token</h1>
-      <div id="embedContainer"></div>
     </div>
 
   </div>
@@ -147,31 +156,69 @@
   <script>
   
     async function getToken(){
-      const response = await fetch('http://localhost:8080/token')
+
+      var myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+
+      var urlencoded = new URLSearchParams();
+      urlencoded.append("company", "Expofrios");
+
+      var requestOptions = {
+        method: 'POST',
+        headers: myHeaders,
+        body: urlencoded,
+        redirect: 'follow'
+      };
+      const response = await fetch('http://localhost:8080/token', requestOptions)
       const data = await response.json()
       return data.data
     }
 
     // Função para gerar o token de acesso
     async function generateEmbedToken() {
-      const tokenAccess = await getToken()
+      const dataReport = await getToken()
 
-      const embedConfig = {
+      for (const token of dataReport.values){
+        const embedConfig = {
         type: 'report',
-        accessToken: tokenAccess?.token,
-        embedUrl: tokenAccess?.embedToken, 
-        id: tokenAccess.id, 
+        accessToken: dataReport?.token,
+        embedUrl: token?.embedUrl, 
+        id: token.id, 
         settings: {
           filterPaneEnabled: true,
           navContentPaneEnabled: false
           }
         };
       
-      const reportContainer = document.getElementById('embedContainer');
-      const report = powerbi.embed(reportContainer, embedConfig);
+      // create containers 
+      const reportContainer = document.getElementById('contentPowerReport');
+      const newContainer = document.createElement('div')
+      newContainer.setAttribute('id', `reportContainer${token.id}`);
+      newContainer.setAttribute('class', `containerReport`);
+      reportContainer.parentNode.insertBefore(newContainer, reportContainer.nextSibling);
+
+      const report = powerbi.embed(newContainer, embedConfig);
       report.on('error', (event) => {
           console.error('Erro ao carregar o relatório:', event.detail);
         });
+      }
+
+      // const embedConfig = {
+      //   type: 'report',
+      //   accessToken: dataReport?.token,
+      //   embedUrl: dataReport?.embedToken, 
+      //   id: dataReport.id, 
+      //   settings: {
+      //     filterPaneEnabled: true,
+      //     navContentPaneEnabled: false
+      //     }
+      //   };
+      
+      // const reportContainer = document.getElementById('embedContainer');
+      // const report = powerbi.embed(reportContainer, embedConfig);
+      // report.on('error', (event) => {
+      //     console.error('Erro ao carregar o relatório:', event.detail);
+      //   });
     }
 
     // Chame a função para gerar o token de acesso quando necessário
