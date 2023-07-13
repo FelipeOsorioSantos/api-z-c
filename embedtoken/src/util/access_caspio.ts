@@ -41,7 +41,7 @@ export async function getAccessTokenCaspio(): Promise<IAccessCaspio> {
 }
 
 
-export async function getCompanyAccess(company:string): Promise<IAccessCaspioTable> {
+export async function getCompanyAccess(company:string, page:number): Promise<IAccessCaspioTable> {
 
   if(!company){
     throw new Error('Empresa não foi passada.');
@@ -49,7 +49,7 @@ export async function getCompanyAccess(company:string): Promise<IAccessCaspioTab
 
   const accessCaspio = await getAccessTokenCaspio()
 
-  const apiUrl = `https://c2aca196.caspio.com/rest/v2/tables/tb_de_para_projeto_relatorio/records?q.where=empresa='${company}'`;
+  const apiUrl = `https://c2aca196.caspio.com/rest/v2/tables/tb_de_para_projeto_relatorio/records?q.where=empresa='${company}' AND pagina=${page}`;
 
   const headers = {
     Authorization: `Bearer ${accessCaspio.access_token}`

@@ -28,7 +28,9 @@ app.use(express.urlencoded({ extended: false }))
 // Get data company. PS: After testing remove this route
 app.post('/company', async (req, res) => {
   const company:string = req.body.company
-  const access_token = await getCompanyAccess(company)
+  const page:string = req.body.page
+  const numPage = Number(page)
+  const access_token = await getCompanyAccess(company, numPage)
   return res.send(access_token);
 })
 
@@ -37,7 +39,9 @@ app.post('/token', async (req, res) => {
 
   //GET DATA COMPANY
   const company:string = req.body.company
-  const access_company = await getCompanyAccess(company)
+  const page:string = req.body.page
+  const numPage = Number(page)
+  const access_company = await getCompanyAccess(company, numPage)
 
   //DATA APLICATION
   const clientId = `${process.env.MICROSOFT_CLIENT_ID}`; 
