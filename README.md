@@ -42,7 +42,7 @@ npm run dev
        <a href="https://github.com/christophersousa/" title="Code">💻</a>
     </td>
      <td align="center">
-      <a href="http://github.com/christophersousa/">
+      <a href="https://www.linkedin.com/company/stageconsulting/">
         <img src="https://media.licdn.com/dms/image/C4D0BAQEHCG_vuTu01A/company-logo_200_200/0/1663940966190/stageconsulting_logo?e=2147483647&v=beta&t=Dn6bixYcdS8wyMsUcbEo_P68napOLyWONiP5WrtcoWQ" width="100px;" alt="Christopher Sousa"/>
         <br />
         <sub>
