@@ -50,9 +50,9 @@ npm run dev
         </sub>
        </a>
        <br />
-        <a href="https://www.linkedin.com/company/stageconsulting/mycompany/" title="Linkedin">@Stageconsulting</a>
+        <a href="https://www.linkedin.com/company/stageconsulting/" title="Linkedin">@Stageconsulting</a>
        <br />
-       <a href="https://www.linkedin.com/company/stageconsulting/mycompany/" title="Company">🏢</a>
+       <a href="https://www.linkedin.com/company/stageconsulting/" title="Company">🏢</a>
     </td>
   </tr>
 </table>
