@@ -38,15 +38,16 @@ app.post('/company', async (req, res) => {
 app.post('/token', async (req, res) => {
 
   //GET DATA COMPANY
-  const company:string = req.body.company
-  const page:string = req.body.page
-  const numPage = Number(page)
-  const access_company = await getCompanyAccess(company, numPage)
+  //const company:string = req.body.company
+  //const page:string = req.body.page
+  //const numPage = Number(page)
+  //const access_company = await getCompanyAccess(company, numPage)
 
   //DATA APLICATION
   const clientId = `${process.env.MICROSOFT_CLIENT_ID}`; 
   const resource = 'https://analysis.windows.net/powerbi/api'; 
-  const reportId =  String(access_company.id_relatorio).split(',');
+  const reportId = ['fd59d169-bf5f-46ba-bcc3-58346f63f800']
+  //const reportId =  String(access_company.id_relatorio).split(',');
   // const reportId = ['0cc4e6ad-dcfc-47fd-94fe-2eacf6edc8ac', '4fd8045a-8c49-4b68-ada3-a6a7562fa96e']; //PS: After testing remove this variable
 
   //AUTH
@@ -55,10 +56,10 @@ app.post('/token', async (req, res) => {
   const authorityUrl = `${authorityHostUrl}/${tenantId}`;
 
   //DATA USER
-  const username = access_company.usuario_pbi;
-  const password = access_company.senha_pbi;
-  // const username = `${process.env.MICROSOFT_USERNAME}`; //PS: After testing remove this variable
-  // const password = `${process.env.MICROSOFT_PASSWORD}`; //PS: After testing remove this variable
+  //const username = access_company.usuario_pbi;
+  //const password = access_company.senha_pbi;
+   const username = `${process.env.MICROSOFT_USERNAME}`; //PS: After testing remove this variable
+   const password = `${process.env.MICROSOFT_PASSWORD}`; //PS: After testing remove this variable
 
   //GET TOKEN
   const context = new AuthenticationContext(authorityUrl);
