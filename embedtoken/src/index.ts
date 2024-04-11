@@ -120,3 +120,4 @@ app.get('/token_scr', async (req, res) => {
 
 
 app.listen(process.env.PORT, ()=> console.log("listening on port 8080"));
+module.exports = app
